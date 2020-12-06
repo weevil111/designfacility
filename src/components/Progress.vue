@@ -50,7 +50,7 @@
       </div>
     </div>
     <div class="btn-container d-flex mb-3">
-      <v-btn outlined text class="submit-btn">
+      <v-btn outlined text class="submit-btn" @click="endExam">
         Submit Exam
       </v-btn>
     </div>
@@ -64,7 +64,7 @@ import {mapGetters, mapActions} from 'vuex';
 export default {
   computed:mapGetters(["section","question"]),
   methods: {
-    ...mapActions(["setNewQuestion"]),
+    ...mapActions(["setNewQuestion","endExam"]),
     legendColor(question) {
       if(!question.visited || question._id === this.question._id){
         return "#4d5358";
@@ -87,11 +87,6 @@ export default {
       this.setNewQuestion(questionNumber-1);
     }
   },
-  created(){
-    setTimeout(() => {
-      this.$forceUpdate();
-    },1000);
-  }
 }
 </script>
 

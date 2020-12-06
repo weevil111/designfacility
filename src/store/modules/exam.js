@@ -4,10 +4,12 @@ const state = {
     exam: {},
     currentSection: {},
     currentQuestion: {},
+    timeRemaining: true
 };
 
 const getters = {
   exam : state => state.exam,
+  time: state => state.exam.examDurationInMinutes,
   examTitle: state => {
     if("examTitle" in state.exam){
       return state.exam.examTitle;
@@ -26,6 +28,7 @@ const getters = {
     }
     return sectionlist;
   },
+  examOver: state => !state.timeRemaining
 }
 
 const actions = {
@@ -58,8 +61,10 @@ const actions = {
   setSelectedOption({commit}, optionText){
     commit('selectOption', optionText);
   },
-  markForReview({commit, state, getters, dispatch}){
-    commit('setMarked');
+  markOrSave({commit, state, getters, dispatch}, mark = true){
+    if(mark){
+      commit('setMarked');
+    }
     if (state.currentQuestion.questionNumber === state.currentSection.questions.length){
       let index = getters.sectionNames.indexOf(state.currentSection.name);
       if(index === state.exam.sections.length-1){
@@ -74,6 +79,9 @@ const actions = {
   },
   clearResponse({commit}){
     commit('clearRes');
+  },
+  endExam({commit}){
+    commit('end');
   }
 }
 
@@ -95,6 +103,7 @@ const mutations = {
   selectOption: (state, optionText) => state.currentQuestion.selectedOption = optionText,
   setMarked: (state) => state.currentQuestion.marked = true,
   clearRes: (state) => state.currentQuestion.selectedOption = "",
+  end: (state) => state.timeRemaining = false
 }
 
 export default {
