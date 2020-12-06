@@ -9,20 +9,32 @@
     </v-row>
     <v-row no-gutters>
       <div class="d-flex mt-2">
-        <div class="pr-10 pl-4 primary white--text section-title text-center">Selected Section</div>
-        <div class="pr-10 pl-4 primary--text section-title ml-n9 text-center white-background"
-          v-for="i in 5" :key="i"
-        > non selected section</div>
+        <div class="pr-10 pl-4 section-title text-center"
+          :class="[{'primary white--text':section.name === sectionName},
+                   {'white-background primary--text':section.name !== sectionName},
+                   {'ml-n9':index>0}]"
+          v-for="(sectionName,index) in sectionNames" :key="index"
+          @click="changeSection(index)"
+        > {{sectionName}} </div>
       </div>
     </v-row>
   </v-sheet>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "TopSection",
-  computed: mapGetters(["examTitle"])
+  computed: mapGetters(["examTitle","section","sectionNames"]),
+  methods: {
+    ...mapActions(["setNewSection","setNewQuestion"]),
+    changeSection(index){
+      this.setNewSection(index);
+      this.setNewQuestion(0);
+      // forceUpdate because vue cannot detect deep values in Object or Array
+      this.$forceUpdate(); 
+    }
+  }
 }
 </script>
 

@@ -8,31 +8,31 @@
     </div>  
     <div class="mt-2 pl-1 d-flex align-center">
       <v-avatar color="#4d5358" size="25" class="black-border">
-        <span class="white--text">2</span>
+        <span class="white--text">{{unvisitedQuestions}}</span>
       </v-avatar>
       <span class="ma-1 ">Questions not visited</span>
     </div>
     <div class="mt-2 pl-1 d-flex align-center">
       <v-avatar color="#d12626" size="25" class="black-border">
-        <span class="white--text">2</span>
+        <span class="white--text">{{unansweredQuestions}}</span>
       </v-avatar>
       <span class="ma-1 ">Questions not Answered</span>
     </div>
     <div class="mt-2 pl-1 d-flex align-center">
       <v-avatar color="#2cb927" size="25" class="black-border">
-        <span class="white--text">2</span>
+        <span class="white--text">{{answeredQuestions}}</span>
       </v-avatar>
       <span class="ma-1 ">Questions Answered</span>
     </div>
     <div class="mt-2 pl-1 d-flex align-center">
       <v-avatar color="#00bcd4" size="25" class="black-border">
-        <span class="white--text">2</span>
+        <span class="white--text">{{markedQuestions}}</span>
       </v-avatar>
       <span class="ma-1 ">Questions Marked</span>
     </div>
     <div class="mt-2 pl-1 d-flex align-center">
       <v-avatar color="#a4a82c" size="25" class="black-border">
-        <span class="white--text">2</span>
+        <span class="white--text">{{answeredAndMarkedQuestions}}</span>
       </v-avatar>
       <span class="ma-1 ">Questions Answered & Marked for Review</span>
     </div>
@@ -61,6 +61,17 @@
     </div>
   </v-container>
 </template>
+
+<script>
+
+import {mapGetters} from 'vuex';
+
+export default {
+  computed: {
+    ...mapGetters(['unansweredQuestions','unvisitedQuestions','answeredQuestions','markedQuestions','answeredAndMarkedQuestions'])
+  }
+}
+</script>
 
 <style scoped>
   .section-heading{

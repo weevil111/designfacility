@@ -5,6 +5,11 @@ const state = () => {
     exam: {},
     currentSection: {},
     currentQuestion: {},
+    unansweredQuestions: 0,
+    unvisitedQuestions: 0,
+    answeredQuestions: 0,
+    markedQuestions: 0,
+    answeredAndMarkedQuestions: 0
   }
 };
 
@@ -21,13 +26,18 @@ const getters = {
   question: state => state.currentQuestion,
   sectionNames: state => {
     let sectionlist = []
-    if (state.exam){
+    if ('sections' in state.exam){
       state.exam.sections.forEach( section => {
         Object.keys(section).forEach(sectionName => sectionlist.push(sectionName))
       })
-      return sectionlist;
     }
-  }
+    return sectionlist;
+  },
+  unansweredQuestions: state => state.unansweredQuestions,
+  unvisitedQuestions: state => state.unvisitedQuestions,
+  answeredQuestions: state => state.answeredQuestions,
+  markedQuestions: state => state.markedQuestions,
+  answeredAndMarkedQuestions: state => state.answeredAndMarkedQuestions,
 }
 
 const actions = {
@@ -35,10 +45,12 @@ const actions = {
     try{
       const response = await axios.get("http://5.181.217.46/DesignFacility/useGETMethodForTheResponse/abhinav");
       const exam = response.data.exam;
-      exam.sections.forEach( section => {
+      exam.sections.forEach( (section) => {
         let questionArray = Object.values(section)[0];
-        questionArray.forEach(question => {
+        questionArray.forEach((question,index) => {
           question.selectedOption = "none";
+          question.questionNumber = index + 1;
+          question.marked = true;
         })
       });
       commit('setExam',exam);
@@ -47,6 +59,15 @@ const actions = {
     }catch(e){
       console.log("An error occured while fetching exam : ",e);
     }
+  },
+  setNewSection({commit}, index){
+    commit('setCurrentSection', index);
+  },
+  setNewQuestion({commit}, index){
+    commit('setCurrentQuestion', index);
+  },
+  setSelectedOption({commit}, optionText){
+    commit('selectOption', optionText);
   }
 }
 
@@ -62,7 +83,8 @@ const mutations = {
   },
   setCurrentQuestion: (state, index) => {
     state.currentQuestion = state.currentSection.questions[index];
-  }
+  },
+  selectOption: (state, optionText) => state.currentQuestion.selectedOption = optionText
 }
 
 export default {
