@@ -3,7 +3,7 @@
     <v-row no-gutters class="d-flex align-center">
       <span>Design Facility</span>
       <v-icon color="secondary">mdi-circle-medium</v-icon>
-      <span class="secondary--text text-uppercase">{{examTitle}}</span>
+      <span class="primary--text text-uppercase">{{examTitle}}</span>
       <v-spacer></v-spacer>
       <span class="text-center px-5 py-1 primary white--text rounded-lg" >Time Left</span>
     </v-row>
