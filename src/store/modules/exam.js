@@ -1,16 +1,9 @@
 import axios from 'axios';
 
-const state = () => {
-  return {
+const state = {
     exam: {},
     currentSection: {},
     currentQuestion: {},
-    unansweredQuestions: 0,
-    unvisitedQuestions: 0,
-    answeredQuestions: 0,
-    markedQuestions: 0,
-    answeredAndMarkedQuestions: 0
-  }
 };
 
 const getters = {
@@ -33,11 +26,6 @@ const getters = {
     }
     return sectionlist;
   },
-  unansweredQuestions: state => state.unansweredQuestions,
-  unvisitedQuestions: state => state.unvisitedQuestions,
-  answeredQuestions: state => state.answeredQuestions,
-  markedQuestions: state => state.markedQuestions,
-  answeredAndMarkedQuestions: state => state.answeredAndMarkedQuestions,
 }
 
 const actions = {
@@ -48,9 +36,10 @@ const actions = {
       exam.sections.forEach( (section) => {
         let questionArray = Object.values(section)[0];
         questionArray.forEach((question,index) => {
-          question.selectedOption = "none";
+          question.selectedOption = "";
           question.questionNumber = index + 1;
-          question.marked = true;
+          question.marked = false;
+          question.visited = false;
         })
       });
       commit('setExam',exam);
@@ -68,6 +57,23 @@ const actions = {
   },
   setSelectedOption({commit}, optionText){
     commit('selectOption', optionText);
+  },
+  markForReview({commit, state, getters, dispatch}){
+    commit('setMarked');
+    if (state.currentQuestion.questionNumber === state.currentSection.questions.length){
+      let index = getters.sectionNames.indexOf(state.currentSection.name);
+      if(index === state.exam.sections.length-1){
+        return
+      }else{
+        dispatch('setNewSection',index+1);
+        dispatch('setNewQuestion',0);
+      }
+    }else{
+      dispatch('setNewQuestion',state.currentQuestion.questionNumber);
+    }
+  },
+  clearResponse({commit}){
+    commit('clearRes');
   }
 }
 
@@ -78,13 +84,17 @@ const mutations = {
   setCurrentSection: (state, index) => {
     const section = state.exam.sections[index];
     const sectionName = Object.keys(section)[0];
+    state.currentSection = {};
     state.currentSection.name = sectionName;
     state.currentSection.questions = section[sectionName];
   },
   setCurrentQuestion: (state, index) => {
     state.currentQuestion = state.currentSection.questions[index];
+    state.currentQuestion.visited = true;
   },
-  selectOption: (state, optionText) => state.currentQuestion.selectedOption = optionText
+  selectOption: (state, optionText) => state.currentQuestion.selectedOption = optionText,
+  setMarked: (state) => state.currentQuestion.marked = true,
+  clearRes: (state) => state.currentQuestion.selectedOption = "",
 }
 
 export default {

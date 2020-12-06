@@ -31,7 +31,7 @@ import { mapGetters, mapActions} from 'vuex';
 
 export default {
   computed: mapGetters(["question"]),
-  methods: mapActions(["setSelectedOption"])
+  methods: mapActions(["setSelectedOption"]),
 }
 </script>
 
